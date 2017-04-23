@@ -28,7 +28,7 @@ Package.onUse(function (api) {
   api.addFiles('lib/PractitionerRoles.js');
   api.addFiles('server/rest.js', 'server');
 
-  api.export('Practitioner');
-  api.export('Practitioners');
-  api.export('PractitionerSchema');
+  api.export('PractitionerRole');
+  api.export('PractitionerRoles');
+  api.export('PractitionerRoleSchema');
 });
