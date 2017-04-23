@@ -475,52 +475,67 @@ JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole/:id/_history/:versi
 // Step 6 - PractitionerRole Search Type  
 
 generateDatabaseQuery = function(query){
+
+
+
+
   console.log("generateDatabaseQuery", query);
 
+  var practitionerRoles = [];
   var databaseQuery = {};
 
+  // GET http://meteor-on-fhir.meteorapp.com/fhir-3.0.0/PractitionerRole?practitioner.identifier=http://hl7.org/fhir/sid/us-npi|1265437362
   if (query['practitioner.identifier']) {
-    databaseQuery['practitioner.reference'] = query['practitioner.identifier'];
+    var paramsArray = query['practitioner.identifier'].split('|');
+    process.env.TRACE && console.log('paramsArray', paramsArray);
+
+    //databaseQuery['practitioner.reference'] = query['practitioner.identifier'];
+    databaseQuery['qualification.identifier.value'] = paramsArray[1];
   }
-  // if (query.family) {
-  //   databaseQuery['name'] = {
-  //     $elemMatch: {
-  //       'family': query.family
-  //     }
-  //   };
-  // }
-  // if (query.given) {
-  //   databaseQuery['name'] = {
-  //     $elemMatch: {
-  //       'given': query.given
-  //     }
-  //   };
-  // }
 
-  // if (query.identifier) {
-  //   databaseQuery['identifier'] = {
-  //     $elemMatch: {
-  //       'value': query.identifier
-  //     }
-  //   };
-  // }
-  // if (query.gender) {
-  //   databaseQuery['gender'] = query.gender;
-  // }
-  // if (query.birthdate) {
-  //   var dateArray = query.birthdate.split("-");
-  //   var minDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2])) + 'T00:00:00.000Z';
-  //   var maxDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2]) + 1) + 'T00:00:00.000Z';
-  //   console.log("minDateArray", minDate, maxDate);
+  // GET http://meteor-on-fhir.meteorapp.com/fhir-3.0.0/PractitionerRole?practitioner.name=MULA
+  if (query['practitioner.name']) {
+    databaseQuery['name'] = {
+      $elemMatch: {
+        'text': {
+          $regex: query['practitioner.name'],
+          $options: 'i'
+        }
+      }
+    };
+  }
 
-  //   databaseQuery['birthDate'] = {
-  //     "$gte" : new Date(minDate),
-  //     "$lt" :  new Date(maxDate)
-  //   };
-  // }
+  // GET http://meteor-on-fhir.meteorapp.com/fhir-3.0.0/PractitionerRole?practitioner.family=MULA&practitioner.given=GREGORY
+  if (query['practitioner.family'] && query['practitioner.given']) {
+    databaseQuery['name.family'] = query['practitioner.family'];
+    databaseQuery['name.given'] = query['practitioner.given'];
+  }
+
+  // GET http://meteor-on-fhir.meteorapp.com/fhir-3.0.0/PractitionerRole?specialty=http://hl7.org/fhir/practitioner-specialty|cardio 
+  if (query['specialty']) {
+    var paramsArray = query['specialty'].split('|');
+    process.env.TRACE && console.log('paramsArray', paramsArray);
+
+    //databaseQuery['practitioner.reference'] = query['practitioner.identifier'];
+    databaseQuery['specialty.coding.code'] = paramsArray[1];
+
+    practitionerRoles = PractitionerRoles.find(databaseQuery).fetch();
+  }
+
 
   process.env.DEBUG && console.log('databaseQuery', databaseQuery);
-  return databaseQuery;
+
+  var practitioner = Practitioners.findOne(databaseQuery);
+  process.env.TRACE && console.log('practitioner', practitioner);
+
+  if(practitioner){
+    var searchString = practitioner.qualification[0].identifier[0].system + '|' + practitioner.qualification[0].identifier[0].value;
+    practitionerRoles = PractitionerRoles.find({'practitioner.reference': searchString}).fetch();
+    process.env.TRACE && console.log('practitionerRoles', practitionerRoles);
+  }
+
+  return practitionerRoles;
+
 }
 
 JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole", function (req, res, next) {
@@ -540,10 +555,10 @@ JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole", function (req, re
         process.env.TRACE && console.log('accessToken.userId', accessToken.userId);
       }
 
-      var databaseQuery = generateDatabaseQuery(req.query);
+      var practitionerRoles = generateDatabaseQuery(req.query);
 
       var payload = [];
-      var practitionerRoles = PractitionerRoles.find(databaseQuery).fetch();
+      //var practitionerRoles = PractitionerRoles.find(databaseQuery).fetch();
 
       process.env.DEBUG && console.log('practitionerRoles', practitionerRoles);
 
