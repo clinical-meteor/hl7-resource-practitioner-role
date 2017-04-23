@@ -1,6 +1,6 @@
 Package.describe({
   name: 'clinical:hl7-resource-practitioner-role',
-  version: '3.0.3',
+  version: '3.0.4',
   summary: 'HL7 FHIR Resource - Practitioner Role',
   git: 'https://github.com/clinical-meteor/hl7-resource-practitioner-role',
   documentation: 'README.md'
