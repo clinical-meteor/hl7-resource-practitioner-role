@@ -1,16 +1,16 @@
-describe('clinical:hl7-resources-practitioners', function () {
+describe('clinical:hl7-resources-practitioner-role', function () {
   var server = meteor();
   var client = browser(server);
 
-  it('Practitioners should exist on the client', function () {
+  it('PractitionerRoles should exist on the client', function () {
     return client.execute(function () {
-      expect(Practitioners).to.exist;
+      expect(PractitionerRoles).to.exist;
     });
   });
 
-  it('Practitioners should exist on the server', function () {
+  it('PractitionerRoles should exist on the server', function () {
     return server.execute(function () {
-      expect(Practitioners).to.exist;
+      expect(PractitionerRoles).to.exist;
     });
   });
 

@@ -1,13 +1,13 @@
-##clinical:hl7-resource-practitioner
+##clinical:hl7-resource-practitioner-role   
 
-HL7 FHIR Resource - Practitioner
+HL7 FHIR Resource - PractitionerRole
 
 ===============================
 #### Installation  
 
 ````bash
 # to add hl7 resource schemas and rest routes
-meteor add clinical:hl7-resource-practitioner
+meteor add clinical:hl7-resource-practitioner-role
 
 # to initialize default data
 INITIALIZE=true meteor
@@ -21,7 +21,7 @@ If you're working with HL7 FHIR Resources, we recommend using [Postman](https://
 ===============================
 #### Conformance Statement  
 
-The resource in this package implements the FHIR Practitioner Resource schema provided at  [https://www.hl7.org/fhir/practitioner.html](https://www.hl7.org/fhir/practitioner.html).  
+The resource in this package implements the FHIR PractitionerRole Resource schema provided at  [https://www.hl7.org/fhir/practitionerrole.html](https://www.hl7.org/fhir/practitionerrole.html).  
 
 ===============================
 #### Licensing  

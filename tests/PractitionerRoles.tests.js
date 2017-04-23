@@ -3,7 +3,7 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { chai } from 'meteor/practicalmeteor:chai';
 import { expect } from 'meteor/practicalmeteor:chai';
 
-describe('clinical:hl7-resource-practitioner', function () {
+describe('clinical:hl7-resource-practitioner-role', function () {
   beforeEach(function () {
     //console.log('beforeEach');
   });
@@ -11,6 +11,6 @@ describe('clinical:hl7-resource-practitioner', function () {
     //console.log('afterEach');
   });
   it('exists globally', function () {
-    expect(Practitioners).to.exist;
+    expect(PractitionerRoles).to.exist;
   });
 });

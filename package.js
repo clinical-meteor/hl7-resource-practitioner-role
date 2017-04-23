@@ -1,8 +1,8 @@
 Package.describe({
-  name: 'clinical:hl7-resource-practitioner',
+  name: 'clinical:hl7-resource-practitioner-role',
   version: '3.0.0',
-  summary: 'HL7 FHIR Resource - Practitioner',
-  git: 'https://github.com/clinical-meteor/hl7-resource-practitioner',
+  summary: 'HL7 FHIR Resource - Practitioner Role',
+  git: 'https://github.com/clinical-meteor/hl7-resource-practitioner-role',
   documentation: 'README.md'
 });
 
@@ -25,7 +25,7 @@ Package.onUse(function (api) {
 
   api.imply('clinical:user-model');
 
-  api.addFiles('lib/Practitioners.js');
+  api.addFiles('lib/PractitionerRoles.js');
   api.addFiles('server/rest.js', 'server');
 
   api.export('Practitioner');
