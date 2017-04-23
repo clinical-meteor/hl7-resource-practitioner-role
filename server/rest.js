@@ -61,8 +61,8 @@ JsonRoutes.sendResult = function (res, options) {
 // Step 1 - Create New PractitionerRole  
 
 JsonRoutes.add("put", "/" + fhirVersion + "/PractitionerRole/:id", function (req, res, next) {
-  process.env.DEBUG && console.log('PUT /fhir-1.6.0/PractitionerRole/' + req.params.id);
-  //process.env.DEBUG && console.log('PUT /fhir-1.6.0/PractitionerRole/' + req.query._count);
+  process.env.DEBUG && console.log('PUT /fhir-3.0.0/PractitionerRole/' + req.params.id);
+  //process.env.DEBUG && console.log('PUT /fhir-3.0.0/PractitionerRole/' + req.query._count);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("content-type", "application/fhir+json");
@@ -124,7 +124,7 @@ JsonRoutes.add("put", "/" + fhirVersion + "/PractitionerRole/:id", function (req
               process.env.TRACE && console.log('result', result);
               res.setHeader("Location", "fhir/PractitionerRole/" + result);
               res.setHeader("Last-Modified", new Date());
-              res.setHeader("ETag", "1.6.0");
+              res.setHeader("ETag", "3.0.0");
 
               var practitionerRoles = PractitionerRoles.find({_id: req.params.id});
               var payload = [];
@@ -158,7 +158,7 @@ JsonRoutes.add("put", "/" + fhirVersion + "/PractitionerRole/:id", function (req
               process.env.TRACE && console.log('result', result);
               res.setHeader("Location", "fhir/PractitionerRole/" + result);
               res.setHeader("Last-Modified", new Date());
-              res.setHeader("ETag", "1.6.0");
+              res.setHeader("ETag", "3.0.0");
 
               var practitionerRoles = PractitionerRoles.find({_id: req.params.id});
               var payload = [];
@@ -207,7 +207,7 @@ JsonRoutes.add("put", "/" + fhirVersion + "/PractitionerRole/:id", function (req
 // Step 2 - Read PractitionerRole  
 
 JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole/:id", function (req, res, next) {
-  process.env.DEBUG && console.log('GET /fhir-1.6.0/PractitionerRole/' + req.params.id);
+  process.env.DEBUG && console.log('GET /fhir-3.0.0/PractitionerRole/' + req.params.id);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("content-type", "application/fhir+json");
@@ -315,9 +315,9 @@ JsonRoutes.add("post", "/" + fhirVersion + "/PractitionerRole", function (req, r
           }
           if (result) {
             process.env.TRACE && console.log('result', result);
-            res.setHeader("Location", "fhir-1.6.0/PractitionerRole/" + result);
+            res.setHeader("Location", "fhir-3.0.0/PractitionerRole/" + result);
             res.setHeader("Last-Modified", new Date());
-            res.setHeader("ETag", "1.6.0");
+            res.setHeader("ETag", "3.0.0");
 
             var practitionerRoles = PractitionerRoles.find({_id: result});
             var payload = [];
@@ -360,8 +360,8 @@ JsonRoutes.add("post", "/" + fhirVersion + "/PractitionerRole", function (req, r
 // Step 4 - PractitionerRoleHistoryInstance
 
 JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole/:id/_history", function (req, res, next) {
-  process.env.DEBUG && console.log('GET /fhir-1.6.0/PractitionerRole/', req.params);
-  process.env.DEBUG && console.log('GET /fhir-1.6.0/PractitionerRole/', req.query._count);
+  process.env.DEBUG && console.log('GET /fhir-3.0.0/PractitionerRole/', req.params);
+  process.env.DEBUG && console.log('GET /fhir-3.0.0/PractitionerRole/', req.query._count);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("content-type", "application/fhir+json");
@@ -415,8 +415,8 @@ JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole/:id/_history", func
 // NOTE:  We've not implemented _history functionality yet; so this endpoint is mostly a duplicate of Step 2.
 
 JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole/:id/_history/:versionId", function (req, res, next) {
-  process.env.DEBUG && console.log('GET /fhir-1.6.0/PractitionerRole/:id/_history/:versionId', req.params);
-  //process.env.DEBUG && console.log('GET /fhir-1.6.0/PractitionerRole/:id/_history/:versionId', req.query._count);
+  process.env.DEBUG && console.log('GET /fhir-3.0.0/PractitionerRole/:id/_history/:versionId', req.params);
+  //process.env.DEBUG && console.log('GET /fhir-3.0.0/PractitionerRole/:id/_history/:versionId', req.query._count);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("content-type", "application/fhir+json");
@@ -469,63 +469,62 @@ JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole/:id/_history/:versi
 
 
 
+
+
+//==========================================================================================
+// Step 6 - PractitionerRole Search Type  
+
 generateDatabaseQuery = function(query){
   console.log("generateDatabaseQuery", query);
 
   var databaseQuery = {};
 
-  if (query.family) {
-    databaseQuery['name'] = {
-      $elemMatch: {
-        'family': query.family
-      }
-    };
+  if (query['practitioner.identifier']) {
+    databaseQuery['practitioner.reference'] = query['practitioner.identifier'];
   }
-  if (query.given) {
-    databaseQuery['name'] = {
-      $elemMatch: {
-        'given': query.given
-      }
-    };
-  }
-  if (query.name) {
-    databaseQuery['name'] = {
-      $elemMatch: {
-        'text': {
-          $regex: query.name,
-          $options: 'i'
-        }
-      }
-    };
-  }
-  if (query.identifier) {
-    databaseQuery['identifier'] = {
-      $elemMatch: {
-        'value': query.identifier
-      }
-    };
-  }
-  if (query.gender) {
-    databaseQuery['gender'] = query.gender;
-  }
-  if (query.birthdate) {
-    var dateArray = query.birthdate.split("-");
-    var minDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2])) + 'T00:00:00.000Z';
-    var maxDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2]) + 1) + 'T00:00:00.000Z';
-    console.log("minDateArray", minDate, maxDate);
+  // if (query.family) {
+  //   databaseQuery['name'] = {
+  //     $elemMatch: {
+  //       'family': query.family
+  //     }
+  //   };
+  // }
+  // if (query.given) {
+  //   databaseQuery['name'] = {
+  //     $elemMatch: {
+  //       'given': query.given
+  //     }
+  //   };
+  // }
 
-    databaseQuery['birthDate'] = {
-      "$gte" : new Date(minDate),
-      "$lt" :  new Date(maxDate)
-    };
-  }
+  // if (query.identifier) {
+  //   databaseQuery['identifier'] = {
+  //     $elemMatch: {
+  //       'value': query.identifier
+  //     }
+  //   };
+  // }
+  // if (query.gender) {
+  //   databaseQuery['gender'] = query.gender;
+  // }
+  // if (query.birthdate) {
+  //   var dateArray = query.birthdate.split("-");
+  //   var minDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2])) + 'T00:00:00.000Z';
+  //   var maxDate = dateArray[0] + "-" + dateArray[1] + "-" + (parseInt(dateArray[2]) + 1) + 'T00:00:00.000Z';
+  //   console.log("minDateArray", minDate, maxDate);
+
+  //   databaseQuery['birthDate'] = {
+  //     "$gte" : new Date(minDate),
+  //     "$lt" :  new Date(maxDate)
+  //   };
+  // }
 
   process.env.DEBUG && console.log('databaseQuery', databaseQuery);
   return databaseQuery;
 }
 
 JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole", function (req, res, next) {
-  process.env.DEBUG && console.log('GET /fhir-1.6.0/PractitionerRole', req.query);
+  process.env.DEBUG && console.log('GET /fhir-3.0.0/PractitionerRole', req.query);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("content-type", "application/fhir+json");
@@ -544,11 +543,15 @@ JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole", function (req, re
       var databaseQuery = generateDatabaseQuery(req.query);
 
       var payload = [];
-      var practitionerRoles = PractitionerRoles.find(databaseQuery);
+      var practitionerRoles = PractitionerRoles.find(databaseQuery).fetch();
+
+      process.env.DEBUG && console.log('practitionerRoles', practitionerRoles);
 
       practitionerRoles.forEach(function(record){
         payload.push(PractitionerRoles.prepForFhirTransfer(record));
       });
+
+      process.env.TRACE && console.log('payload', payload);
 
       // Success
       JsonRoutes.sendResult(res, {
@@ -569,11 +572,8 @@ JsonRoutes.add("get", "/" + fhirVersion + "/PractitionerRole", function (req, re
   }
 });
 
-//==========================================================================================
-// Step 6 - PractitionerRole Search Type  
-
 JsonRoutes.add("post", "/" + fhirVersion + "/PractitionerRole/:param", function (req, res, next) {
-  process.env.DEBUG && console.log('POST /fhir-1.6.0/PractitionerRole/' + JSON.stringify(req.query));
+  process.env.DEBUG && console.log('POST /fhir-3.0.0/PractitionerRole/' + JSON.stringify(req.query));
 
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("content-type", "application/fhir+json");
@@ -637,7 +637,7 @@ JsonRoutes.add("post", "/" + fhirVersion + "/PractitionerRole/:param", function 
 // Step 7 - PractitionerRole Delete    
 
 JsonRoutes.add("delete", "/" + fhirVersion + "/PractitionerRole/:id", function (req, res, next) {
-  process.env.DEBUG && console.log('DELETE /fhir-1.6.0/PractitionerRole/' + req.params.id);
+  process.env.DEBUG && console.log('DELETE /fhir-3.0.0/PractitionerRole/' + req.params.id);
 
   res.setHeader("Access-Control-Allow-Origin", "*");
 
